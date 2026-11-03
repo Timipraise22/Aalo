@@ -10,12 +10,13 @@ import base64
 
 app = Flask(__name__)
 
-# Initialize Firebase. Keep firebase_key.json out of version control.
-# Check if Firebase is already initialized before connecting
-if not firebase_admin._apps:
+# Try to get the existing app, and only initialize if it throws an error
+try:
+    firebase_admin.get_app()
+except ValueError:
     cred = credentials.Certificate("firebase_key.json")
     firebase_admin.initialize_app(cred)
-    
+
 db = firestore.client()
 
 def get_logo_data_uri():
