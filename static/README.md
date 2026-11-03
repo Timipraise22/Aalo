@@ -1,0 +1,1 @@
+Place your `logo.png` file in this directory. The invoice app loads it from `static/logo.png`.
