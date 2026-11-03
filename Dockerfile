@@ -1,18 +1,23 @@
-# 1. Use the full Python image to ensure all graphical libraries are present
-FROM python:3.10-bullseye
+# 1. Switch to Ubuntu 22.04 (which has stable, unbroken servers)
+FROM ubuntu:22.04
 
-# 2. Bypass Render's broken cache and install wkhtmltopdf safely
-RUN apt-get clean && apt-get -o Acquire::http::No-Cache=True update -y && apt-get install -y --fix-missing wkhtmltopdf
+# 2. Stop the installation from pausing to ask for a timezone
+ENV DEBIAN_FRONTEND=noninteractive
 
-# 3. Set the working directory for your application
+# 3. Install Python, pip, and wkhtmltopdf from Ubuntu's reliable servers
+RUN apt-get update -y && \
+    apt-get install -y python3 python3-pip wkhtmltopdf && \
+    apt-get clean
+
+# 4. Set the working directory
 WORKDIR /app
 
-# 4. Copy over your requirements and install Python dependencies
+# 5. Copy and install your requirements
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-# 5. Copy the rest of your application code into the container
+# 6. Copy the rest of the application
 COPY . .
 
-# 6. Start the application (assuming your main file is app.py)
+# 7. Start the server
 CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:10000"]
