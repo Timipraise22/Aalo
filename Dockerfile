@@ -2,7 +2,7 @@
 FROM python:3.10-slim-bullseye
 
 # Install the wkhtmltopdf engine
-RUN apt-get update && apt-get install -y wkhtmltopdf
+RUN apt-get clean && apt-get update -y && apt-get install -y wkhtmltopdf
 
 WORKDIR /app
 COPY requirements.txt .
